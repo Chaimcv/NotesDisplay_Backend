@@ -15,7 +15,22 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 
 // Set security headers (relaxed for cross-origin communication)
 app.use(helmet({
