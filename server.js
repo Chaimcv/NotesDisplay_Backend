@@ -7,6 +7,11 @@ import connectDB from './src/config/db.js';
 // Connect to database
 connectDB();
 
+if (!process.env.JWT_SECRET) {
+    console.error('FATAL ERROR: JWT_SECRET is not defined in environment variables.');
+    process.exit(1);
+}
+
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {

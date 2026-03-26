@@ -15,10 +15,12 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 
-// Set security headers
-app.use(helmet());
+// Set security headers (relaxed for cross-origin communication)
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
